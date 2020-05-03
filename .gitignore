@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+##Models
+/Bert
+/xlnet
+/cache_dir
+/pytorchdump
+/gpt_personachat_cache
