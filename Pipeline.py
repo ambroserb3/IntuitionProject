@@ -29,8 +29,6 @@ def InferencePipeline(user_input):
     else:
         experentialPersona.interact()
 
-	# Evaluate
-
 if __name__ == "__main__":
     user_input = raw_input("Hi, how can I help?") 
     InferencePipeline(user_input)
