@@ -102,25 +102,24 @@ def PrepData():
 
 def setupEmotion(df):
     EmotionDF = df[df.TherapyPersona == 'Emotion']
-    data_set = {"Personality": ["How did that make you feel?", "I want to get to the source of these feelings."], 
-                "utterances": [{"candidates": [], "history": []}]}
-    Prev = ''
+    data_set = [{"personality": ["How did that make you feel?", "I want to get to the source of these feelings."], 
+                "utterances": [{"candidates": [], "history": []}]}]
     i = 0
     # print(EmotionDF['questionText'].nunique())
     for index, row in EmotionDF.iterrows():
         Question = row['questionText']
         Answer =  row['answerText']
-        if(Prev == Question):
-            # print(len(data_set["utterances"]))
-            data_set["utterances"][i]["candidates"].append(Answer)
-            Prev = Question
-        else:
-            data_set["utterances"].append({"candidates": [], "history": []})
-            data_set["utterances"][i]["history"].append(Question)
-            i += 1
-            data_set["utterances"][i]["candidates"].append(Answer)
-            Prev = Question
-            
+        numCandidates = len(data_set[0]["utterances"][i]["candidates"])
+        if(i==100):
+            break
+        if(i != len(EmotionDF) - 1):
+            data_set[0]["utterances"].append({"candidates": [], "history": []})
+        if(numCandidates < 1):
+            data_set[0]["utterances"][i]["candidates"].append(Answer)
+            data_set[0]["utterances"][i]["history"].append(Question)
+        i += 1
+
+
     json_dump = json.dumps(data_set)
     EmotionPersona = json.loads(json_dump)
 
@@ -129,23 +128,22 @@ def setupEmotion(df):
 
 def setupExperential(df):
     ExperentialDF = df[df.TherapyPersona == 'Experiential']
-    data_set = {"Personality": ["Tell me more about the situation?", "Has this happened before in the past?"], 
-                "utterances": [{"candidates": [], "history": []}]}
-    Prev = ''
+    data_set = [{"personality": ["Tell me more about the situation?", "Has this happened before in the past?"], 
+                "utterances": [{"candidates": [], "history": []}]}]
     i = 0
     for index, row in ExperentialDF.iterrows():
         Question = row['questionText']
         Answer =  row['answerText']
-        if(Prev == Question):
-            # print(len(data_set["utterances"]))
-            data_set["utterances"][i]["candidates"].append(Answer)
-            Prev = Question
-        else:
-            data_set["utterances"].append({"candidates": [], "history": []})
-            data_set["utterances"][i]["history"].append(Question)
-            i += 1
-            data_set["utterances"][i]["candidates"].append(Answer)
-            Prev = Question
+        numCandidates = len(data_set[0]["utterances"][i]["candidates"])
+        if(i==100):
+            break
+        if(i != len(ExperentialDF) - 1):
+            data_set[0]["utterances"].append({"candidates": [], "history": []})
+        if(numCandidates < 1):
+            data_set[0]["utterances"][i]["candidates"].append(Answer)
+            data_set[0]["utterances"][i]["history"].append(Question)
+        i += 1
+
             
     json_dump = json.dumps(data_set)
     ExperentialPersona = json.loads(json_dump)

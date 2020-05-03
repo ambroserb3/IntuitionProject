@@ -1,30 +1,36 @@
-# # The Models
-# 1. A model for EntityRecognition to output a topic
-# 2. A model for each persona/topic to elicit responses within that topic trained on dialogue history
-
-# # THE PLAN
-# 1. Entity Recognition to choose a topic
-# 2. Based on topic, feed input into a second model
-# 3. Output response
+### This is the main module of the inference pipeline. ###
 
 import Extraction
 import filterPersona
 
-def InferencePipeline():
-    ''' The pipeline uses 
+def InferencePipeline(user_input):
+    ''' 
+    This pipeline uses a trained xlnet model for inferring the chat persona type.
+    Then interacts with that chatbot persona, trained on counsel chats dataset
+    Arguments
+    -user_input: this is text that is raw_input from the user
     '''
-    #Load models
-    model = ConvAIModel("gpt", "outputs")
-	print("Model is: ", model_filename)
-	print("Finished loading models, now prepping")
-    #Prep data
-
-    #Make chat therapy persona type prediction
+    print user_input
     
+    #Load models
+    emotionPersona = ConvAIModel("gpt", "outputs")
+    experentialPersona = ConvAIModel("gpt", "outputs")
+    print("Finished loading models, now prepping")
+ 
+    #Prep data
+    extractedText = extraction(user_input)
+    
+    #Make chat therapy persona type prediction
+    PersonaType = filterPersona(extractedText)
+
     #Feed into Therapy Persona Conversational Ai Model
+    if PersonaType = "Emotion":
+        emotionPersona.interact()
+    else:
+        experentialPersona.interact()
 
 	# Evaluate
-    
-	return accuracy    
 
 if __name__ == "__main__":
+    user_input = raw_input("Hi, how can I help?") 
+    InferencePipeline(user_input)
