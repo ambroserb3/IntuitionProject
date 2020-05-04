@@ -4,12 +4,12 @@ from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
 
 ### One time Downloads ####
-# nltk.download('punkt')
-# nltk.download('averaged_perceptron_tagger')
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
 
 # REPLACE_BY_SPACE_RE = re.compile('[/(){}\[\]\|@,;]')
 # BAD_SYMBOLS_RE = re.compile('[^0-9a-z #+_]')
-STOPWORDS = set(stopwords.words('english'))
+# STOPWORDS = set(stopwords.words('english'))
 
 def clean_text(text):
     """
