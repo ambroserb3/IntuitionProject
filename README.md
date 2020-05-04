@@ -1,16 +1,25 @@
 # IntuitionProject
-An ML project to respond to concerns with appropriate response from an intuitive AI.
+An ML project to respond to concerns with short, contextual, and empathic response from an intuitive AI.
 
 # How it works
 1. We have three deep learning models. One of them is a general text classifier trained on XLNET which takes in the user's message as input and outputs a prediction on whether or not their message is "Emotional" or "Experential." These two classes include a certain set of topics from the original data set which can be set by business logic. The other two models are the chatbot therapist personas based on each of those classes (Emotional, and Experiential) built on GPT2 using the hugging face transformers implementation. 
 
-2. The idea, is that the emotional persona will respond to topics like depression or anxiety and be more reflective about those feelings. Conversely, experiential is more focused on situations and experiences. These personas have a knowledge base which is based off the counsel chat dataset. They store a couple sentences describing their personality and a short dialogue history. When a message is received from a user, the agent will combine the content of this knowledge base with the message input to generate a reply.
+2. The idea, is that the emotional persona will respond to topics like depression or anxiety and be more reflective about those feelings. Conversely, experiential is more focused on situations and experiences. These personas have a knowledge base which is based off the counsel chat dataset. They store a couple sentences describing their personality and a short dialogue history. When a message is received from a user, the agent will combine the content of this knowledge base with the message input to generate a reply. Our model essentially generates a probability distribution over the vocabulary for the next token following each input sequence. 
 
 3. Once our XLNET model outputs the prediction for which persona to assign, that input is fed into the respective persona model for that conversation where the interaction continues.
 
 # Steps to train
 1. Download the pretrained xlnet model in /xlnet
-2. Convert the xlnet tensorflow model to a pytorch model
+2. Convert the xlnet tensorflow checkpoint to a pytorch model 
+
+        export TRANSFO_XL_CHECKPOINT_PATH=xlnet/checkpoint
+        export TRANSFO_XL_CONFIG_PATH=xlnet/config.json
+        export PYTORCH_DUMP_OUTPUT=pytorchdump
+        transformers-cli convert --model_type xlnet \
+          --tf_checkpoint $TRANSFO_XL_CHECKPOINT_PATH \
+          --config $TRANSFO_XL_CONFIG_PATH \
+          --pytorch_dump_output $PYTORCH_DUMP_OUTPUT \
+
 3. Run Prep.ipynb to set up training and test data for personas and the xlnet model
 4. Run TrainXLNET.ipynb to train the XLNET model on our data and Train.ipynb to train my personas
 5. Run pipeline.ipynb, which should allow you to chat with a persona through my inference pipeline
