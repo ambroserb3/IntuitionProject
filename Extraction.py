@@ -14,7 +14,8 @@ STOPWORDS = set(stopwords.words('english'))
 def clean_text(text):
     """
         text: a string
-        return: modified initial string
+        return: cleaned string
+        warning: removing all nltk stop words is almost certainly a bad idea in this use case.
     """
     text = text.lower() # lowercase text
     text = REPLACE_BY_SPACE_RE.sub(' ', text) # replace REPLACE_BY_SPACE_RE symbols by space in text
@@ -22,7 +23,7 @@ def clean_text(text):
     text = ' '.join(word for word in text.split() if word not in STOPWORDS) # delete stopwors from text
     return text
     
-df['questionTitle'] = df['questionTitlee'].apply(clean_text)
+df['questionText'] = df['questionText'].apply(clean_text)
 print_plot(10)
 
 

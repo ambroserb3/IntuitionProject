@@ -22,7 +22,7 @@ def switch(topic):
     '''
 	Returns a the Therapy Persona type corresponding to the topic
 	Arguments:
-	- topic: Dataframe with comments and their corresponding toxicities 
+	- topic: the topic/category of the row
     '''
     switcher = {
         #emotion categories
@@ -74,12 +74,22 @@ def removeEmpty(df):
     return df
     
 def setPersona(df):
+    '''
+	Returns the dataframe with a Therapy Persona row filled based on the corresponding topic
+	Arguments:
+	- df: Dataframe with the questions, answers, and topics
+    '''
     for index, row in df.iterrows():
         df.at[index, 'TherapyPersona'] = switch(row['topic'])
     return df
 
 #Split Data
 def SplitandSave(df):
+    '''
+	Splits the dataset into Train, Test, and Validation subsets
+	Arguments:
+	- df: Dataframe with the questions, answers, and topics
+    '''
     print(df.groupby('split').count())
 
     train_df = df[df.split == 'train']
@@ -87,25 +97,25 @@ def SplitandSave(df):
     val_df = df[df.split == 'val']
 
     #Save sets
-    train_df.to_csv ('Data/Train.csv', index = False, header=True)
-    test_df.to_csv ('Data/Test.csv', index = False, header=True)
-    val_df.to_csv ('Data/Val.csv', index = False, header=True)
+#     train_df.to_csv ('Data/Train.csv', index = False, header=True)
+#     test_df.to_csv ('Data/Test.csv', index = False, header=True)
+#     val_df.to_csv ('Data/Val.csv', index = False, header=True)
     
-    print(train_df)
+    return train_df, test_df, val_df
 
-def PrepData():
-    df = loadData()
-    df = removeEmpty(df)
-    df = setPersona(df)
-    SplitandSave(df)
-    return df
-
-def setupEmotion(df):
-    EmotionDF = df[df.TherapyPersona == 'Emotion']
+def setupEmotion(train_df, test_df, val_df):
+    '''
+	Loads data from the dataframe and dumps to a json for the emotion persona training set
+	Arguments:
+	- train_df: Train set Dataframe with the questions, answers, and topics for the emotion persona
+	- test_df: Testing set Dataframe with the questions, answers, and topics for the emotion persona
+	- val_df: Validation set Dataframe with the questions, answers, and topics for the emotion persona
+    '''
+    #####################Train Data##########################
+    EmotionDF = train_df[train_df.TherapyPersona == 'Emotion']
     data_set = [{"personality": ["How did that make you feel?", "I want to get to the source of these feelings."], 
                 "utterances": [{"candidates": [], "history": []}]}]
     i = 0
-    # print(EmotionDF['questionText'].nunique())
     for index, row in EmotionDF.iterrows():
         Question = row['questionText']
         Answer =  row['answerText']
@@ -125,9 +135,49 @@ def setupEmotion(df):
 
     with open('Data/EmotionPersona.json', 'w') as outfile:
         json.dump(EmotionPersona, outfile)
+    setupEmotionTest(test_df)
 
-def setupExperential(df):
-    ExperentialDF = df[df.TherapyPersona == 'Experiential']
+def setupEmotionTest(test_df):
+    '''
+	Loads data from the dataframe and dumps to a json for the test set of the emotion persona
+	Arguments:
+	- test_df: Testing set Dataframe with the questions, answers, and topics for the emotion persona
+    '''
+    #####################Test Data##########################
+    test_EmotionDF = test_df[test_df.TherapyPersona == 'Emotion']
+    tdata_set = [{"personality": ["How did that make you feel?", "I want to get to the source of these feelings."], 
+                "utterances": [{"candidates": [], "history": []}]}]
+    i = 0
+    for index, row in test_EmotionDF.iterrows():
+        Question = row['questionText']
+        Answer =  row['answerText']
+        numCandidates = len(tdata_set[0]["utterances"][i]["candidates"])
+        if(i==100):
+            break
+        if(i != len(test_EmotionDF) - 1):
+            tdata_set[0]["utterances"].append({"candidates": [], "history": []})
+        if(numCandidates < 1):
+            tdata_set[0]["utterances"][i]["candidates"].append(Answer)
+            tdata_set[0]["utterances"][i]["history"].append(Question)
+        i += 1
+
+
+    json_dump = json.dumps(tdata_set)
+    test_EmotionPersona = json.loads(json_dump)
+
+    with open('Data/EmotionPersonaTest.json', 'w') as outfile:
+        json.dump(test_EmotionPersona, outfile)
+        
+def setupExperential(train_df, test_df, val_df):
+    '''
+	Loads data from the dataframe and dumps to a json for experential persona training set
+	Arguments:
+	- train_df: Train set Dataframe with the questions, answers, and topics for the emotion persona
+	- test_df: Testing set Dataframe with the questions, answers, and topics for the emotion persona
+	- val_df: Validation set Dataframe with the questions, answers, and topics for the emotion persona
+    '''
+    #####################Train Data##########################
+    ExperentialDF = train_df[train_df.TherapyPersona == 'Experiential']
     data_set = [{"personality": ["Tell me more about the situation?", "Has this happened before in the past?"], 
                 "utterances": [{"candidates": [], "history": []}]}]
     i = 0
@@ -148,28 +198,53 @@ def setupExperential(df):
     json_dump = json.dumps(data_set)
     ExperentialPersona = json.loads(json_dump)
 
-    with open('Data/ExperentialPersona.json', 'w') as outfile:
+    with open('Data/ExperentialPersonaTest.json', 'w') as outfile:
         json.dump(ExperentialPersona, outfile)
 
+    setupExpTest(test_df)
+
+def setupExpTest(test_df):
+    '''
+	Loads data from the dataframe and dumps to a json for the testing set for the experential persona
+	Arguments:
+	- test_df: Testing set Dataframe with the questions, answers, and topics for the experential persona
+    '''
+    #####################Test Data##########################
+    test_ExperentialDF = test_df[test_df.TherapyPersona == 'Experiential']
+    tdata_set = [{"personality": ["Tell me more about the situation?", "Has this happened before in the past?"], 
+                "utterances": [{"candidates": [], "history": []}]}]
+    i = 0
+    for index, row in test_ExperentialDF.iterrows():
+        Question = row['questionText']
+        Answer =  row['answerText']
+        numCandidates = len(tdata_set[0]["utterances"][i]["candidates"])
+        if(i==100):
+            break
+        if(i != len(test_ExperentialDF) - 1):
+            tdata_set[0]["utterances"].append({"candidates": [], "history": []})
+        if(numCandidates < 1):
+            tdata_set[0]["utterances"][i]["candidates"].append(Answer)
+            tdata_set[0]["utterances"][i]["history"].append(Question)
+        i += 1
+
+            
+    json_dump = json.dumps(tdata_set)
+    test_ExperentialPersona = json.loads(json_dump)
+
+    with open('Data/ExperentialPersona.json', 'w') as outfile:
+        json.dump(test_ExperentialPersona, outfile)
 
 def PrepPersonaData():
+    '''
+	loads data into dataframe, removes empty rows, sets the persona type for corresponding categories, splits and saves the 
+    datasets, then sets up the dataset used for training and testing each persona
+    '''
     df = loadData()
     df = removeEmpty(df)
     df = setPersona(df)
-    setupEmotion(df)
-    setupExperential(df)
+    train_df, test_df, val_df = SplitandSave(df)
+    setupEmotion(train_df, test_df, val_df)
+    setupExperential(train_df, test_df, val_df)
 
 # pd.set_option("display.max_rows", None, "display.max_columns", None)
 PrepPersonaData()
-
-
-# candidates will be the answer answerText
-# history will be the questionText + answerText
-# 1. Filter duplicate questions. 
-# 2. set candidates for each utterance will be the answer text from a questionText
-# 3. The history will be that questionText
-
-    
-    
-
-
