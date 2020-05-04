@@ -24,3 +24,15 @@ A simple random forest would likely perform better for this given training set, 
 1. Maybe we can use therapist url to do webscraping to help build more personalized personalities
 2. We might be able to use upvotes, and phrase extraction('seems like') to add more features to the training data, for more meaningful predictions. 
 3. We could engineer more training data based on category searches.
+
+# Challenge and Drawbacks
+1. Limited training data, also not particularly clean data. Transfer Learning is a good way to deal, but with only 2000ish potential samples, it's still a challenge. I wish I'd spent some time engineering or scraping more data. Looking back, I may have been able to supplement this data well by scraping a mental health reddit. Of course abstracting away classes of topics to just Emotional and Experiential was one way to help deal with this. 
+2. COMPUTE POWER. I'm on a new laptop which apparently couldn't handle retraining any of the massive pretrained NNs I was using. I'm so used to having access to all the compute power I need on GCP or AWS, I didn't realize service limits were a thing for individual users, and had to further minimize the parameters and training data just to train (very slowly) what I had. With a single p3.2xlarge instance on sagemaker I could have had each of these models train in about an hour, and being able to test and optimize them more. 
+3. Inference speed. While I haven't been able to test my models yet, I know from experience, that they can take a few seconds too many to load before inference. This obviously depends a lot on the compute power of the endpoint, but I have multiple models loaded and running during inference, which wouldn't be an ideal setup for a chatbot application, where the end_user likely expects a fast response. There are some ways around this though.
+4. Class imbalance. I didn't take the time to do extensive EDA for this, but I did a little bit, the classes are definitely imbalanced in this tiny training set. Not really sure whether or not I would oversample or undersample to resolve that, I'd have to look at the data and think about it more.
+
+# ToDos
+1. Stopwords, we're using deep learning models and this is a very context sensitive application, so removing all stop words for training and inference is an awful idea. "I'm feeling overworked and stressed because I didn't finish a project in time." and "I'm not feeling overworked and stressed because I did finish a project in time" might both be read as "feeling overworked stressed because finish project time." No bueno. Need a custom stopwords dictionary.
+2. More Cleaning, lots of non utf-8 characters and homoglyphs which should probably be substituted.
+3. Evaluation, I don't trust the internal metrics of ml frameworks by themselves, I prefer to use them in conjuction with scripts I can use to evaluate any given test set. 
+4. Inference pipeline. I know that xlnet predictor probably produces a tuple from experience rather than a boolean. Once that model is finished I'll need to make sure I'm return the correct input from that tuple to feed into the persona model. 
