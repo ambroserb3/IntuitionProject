@@ -17,6 +17,7 @@ An ML project to respond to concerns with appropriate response from an intuitive
 
 # Notes
 It's optimal to run with NVIDIA V100 gpu because of pytorch.
+Both google and aws won't let me exceed service quota so training on mutliple gpus, hasn't been an option. I apparently have to wait 24-48 hours after starting a project to request a service limit increase. I've always used GCP and AWS on company/research institution accounts so this has never been an issue. As a result I'm training very big models with a limited amount of computer power and memory, so I've had to minimize parameters to build the model.
 A simple random forest would likely perform better for this given training set, but I wanted a more creative and fun solution.
 
 # Ideas 
