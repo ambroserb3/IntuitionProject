@@ -38,8 +38,8 @@ def extraction(text):
 
 
 ### Unit Test ####
-text = "I am feeling overworked and depressed"
-print(extraction(text))
+# text = "I am feeling overworked and depressed"
+# print(extraction(text))
 
 # CC coordinating conjunction
 # CD cardinal digit
