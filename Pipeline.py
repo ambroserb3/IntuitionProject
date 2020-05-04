@@ -24,7 +24,7 @@ def InferencePipeline(user_input):
     PersonaType = filterPersona(extractedText)
 
     #Feed into Therapy Persona Conversational Ai Model
-    if PersonaType = "Emotion":
+    if PersonaType = "Emotion":    ## this is almost certainly a tuple and I need to make sure I grab the correct value
         emotionPersona.interact()
     else:
         experentialPersona.interact()

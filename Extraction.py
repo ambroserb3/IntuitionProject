@@ -23,18 +23,18 @@ def clean_text(text):
     text = ' '.join(word for word in text.split() if word not in STOPWORDS) # delete stopwors from text
     return text
     
-df['questionText'] = df['questionText'].apply(clean_text)
-print_plot(10)
+# df['questionText'] = df['questionText'].apply(clean_text)
+# print_plot(10)
 
 
 def extraction(text):
     """
         text: a string
-        return: the original string tokenized with part of speech tags
+        return: the original string tokenized  --with part of speech tags--
     """
     tokens = nltk.word_tokenize(text)
-    posTags = nltk.pos_tag(tokens)
-    return posTags
+#     posTags = nltk.pos_tag(tokens)
+    return tokens
 
 
 ### Unit Test ####
