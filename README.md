@@ -34,7 +34,7 @@ A simple random forest would be muct faster to train and likely perform better f
 1. Maybe we can use therapist url to do webscraping to help build more personalized personalities
 2. We might be able to use upvotes, and phrase extraction('seems like') to add more features to the training data, for more meaningful predictions. 
 3. We could engineer more training data based on category searches.
-4. Would be nice experiment with part of speech tags for entity extraction and topic modeling to filter personas.
+4. Would be nice to experiment with part of speech tags for entity extraction and topic modeling to filter personas.
 
 # Challenge and Drawbacks
 1. Limited training data, also not particularly clean data. Transfer Learning is a good way to deal with this, but with only 2000ish potential samples it's still a challenge. I wish I'd spent some time engineering or scraping more data. Looking back, I may have been able to supplement this data well by scraping a mental health reddit. Of course abstracting away classes of topics to just Emotional and Experiential was one way to help deal with this. 
