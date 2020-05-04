@@ -28,7 +28,7 @@ An ML project to respond to concerns with short, contextual, and empathic respon
 It's optimal to run with NVIDIA 8V100 gpu because of pytorch.
 Both google and aws won't let me exceed service quota so training on mutliple gpus, hasn't been an option. I apparently have to wait 24-48 hours after starting a project to request a service limit increase. I've always used GCP and AWS on company/research institution accounts so this has never been an issue. As a result I'm training very big models with a limited amount of computer power and memory, so I've had to minimize parameters to even try to train the model.
 
-A simple random forest would be muct faster to train and likely perform better for this given training set, but I wanted a more creative and fun solution.
+A simple random forest would be muct faster to train and likely perform better for this given training set, and could ensure specific responses, but I wanted a more creative and fun solution.
 
 # Ideas 
 1. Maybe we can use therapist url to do webscraping to help build more personalized personalities
